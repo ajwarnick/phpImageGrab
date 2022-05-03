@@ -4,27 +4,103 @@ let img;
 const cellSize = 20;
 const offset = cellSize * 3;
 const imgBuffer = 40;
-const sW = 1;
+const sW = 2;
 
 const bw = true;
 
 function setup() {
-    canvas = createCanvas(window.innerWidth, window.innerHeight);
-    let image = document.getElementById("image");
-    img = loadImage(image.src);
+    createCanvas(window.innerWidth, window.innerHeight);
+    let nytImage = document.getElementById("image");
+    img = loadImage(nytImage.src);
+   
     // getArticleList()
 }
 
 function draw() {
   background(0);
-  // image(img, 0, 0);
-  drawImage(img);
-  // noLoop();
+  // console.log(img);
+  drawImageNew(img);
+  noLoop();
 }
 
 function mousePressed() {
   noLoop();
 }
+
+const drawImageNew = (img) => {
+  let nW, nH, x, y;
+
+  if(img.width >= img.height){
+    nW = width - (imgBuffer + imgBuffer);
+    nH = ((width - (imgBuffer + imgBuffer)) * img.height) / img.width;
+    x = img.width >= width ? 0 + imgBuffer : 0 + imgBuffer;
+    y = nH >= height ? 0 + imgBuffer : (height - (width * img.height) / img.width) / 2 + imgBuffer;
+
+  }
+
+  if(img.width < img.height){
+    nH = height - (imgBuffer + imgBuffer);
+    nW = ((height - (imgBuffer + imgBuffer)) * img.width) / img.height;
+    y = imgBuffer;
+    x = (width/2) - (nW/2);
+  }
+
+  if( (nH + (imgBuffer * 2)) > window.innerHeight ){
+    nH = height - (imgBuffer + imgBuffer);
+    nW = ((height - (imgBuffer + imgBuffer)) * img.width) / img.height;
+    y = imgBuffer;
+    x = (width/2) - (nW/2);
+  }
+
+  if(  (nW + (imgBuffer * 2)) > window.innerWidth){
+    nW = width - (imgBuffer + imgBuffer);
+    nH = ((width - (imgBuffer + imgBuffer)) * img.height) / img.width;
+    x = img.width >= width ? 0 + imgBuffer : 0 + imgBuffer;
+    y = nH >= height ? 0 + imgBuffer : (height - (width * img.height) / img.width) / 2 + imgBuffer;
+  }
+
+  image(img, x, y, nW, nH);
+  // filter(BLUR, 4);
+
+  strokeWeight(sW);
+  stroke(255);
+  
+  // Vertical Loop
+  for (let i = 0; i < ((nW - offset - offset) / cellSize)  ; i++) {
+    drawGridLine(
+      x + offset + cellSize * i,
+      y + offset,
+      x + offset + cellSize * i,
+      y + (nH - offset)
+    );
+  }
+
+  // Hoizontal Loop
+  for (let i = 0; i <= (nH - offset - offset) / cellSize ; i++) {
+    drawGridLine(
+      x + offset,
+      y + offset + cellSize * i,
+      x + (nW - offset),
+      y + offset + cellSize * i
+    );
+  }
+
+  // Drawing Dots
+  for (let i = 0; i < ((nH - offset - offset) / cellSize) - 1; i++) {
+    for (let j = 0; j < ((nW - offset - offset) / cellSize) - 1; j++) {
+      drawDot(x + offset + cellSize * j, y + offset + cellSize * i);
+    }
+  }
+
+  fill(0);
+  noStroke();
+  rect(x - 5,0, 7, height);
+  rect(0,0, width + 10, offset);
+  rect(0, height-offset, width, offset);
+  rect(x + nW - 2,0, 10, height);
+};
+
+
 
 drawImage = function (i) {
   if( i.width >= i.height){
@@ -50,14 +126,14 @@ drawGrid = function (x, y, w, h) {
   stroke(255);
 
   // Vertical Loop
-  for (let i = 0; i < (w - offset - offset) / (cellSize + sW) + 2; i++) {
-    drawGridLine(
-      x + offset + cellSize * i,
-      y + offset,
-      x + offset + cellSize * i,
-      y + (h - offset)
-    );
-  }
+  // for (let i = 0; i < (w - offset - offset) / (cellSize + sW) + 2; i++) {
+  //   drawGridLine(
+  //     x + offset + cellSize * i,
+  //     y + offset,
+  //     x + offset + cellSize * i,
+  //     y + (h - offset)
+  //   );
+  // }
 
   // line(x + random(10, 20), y + offset, x + w - random(10, 20), y + offset);
 
@@ -69,14 +145,14 @@ drawGrid = function (x, y, w, h) {
   // );
 
   // Hoizontal Loop
-  for (let i = 0; i < (h - offset - offset) / (cellSize + sW) + 1; i++) {
-    drawGridLine(
-      x + offset,
-      y + offset + cellSize * i,
-      x + (w - offset),
-      y + offset + cellSize * i
-    );
-  }
+  // for (let i = 0; i < (h - offset - offset) / (cellSize + sW) + 1; i++) {
+  //   drawGridLine(
+  //     x + offset,
+  //     y + offset + cellSize * i,
+  //     x + (w - offset),
+  //     y + offset + cellSize * i
+  //   );
+  // }
 
   // line(x + offset, y + random(10, 20), x + offset, y + h - random(10, 20));
 
@@ -141,10 +217,6 @@ const arrAvg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
 
 
 window.onresize = function() {
-  loop()
-  var w = window.innerWidth;
-  var h = window.innerHeight;  
-  canvas.size(w,h);
-  width = w;
-  height = h;
+  loop() 
+  resizeCanvas(window.innerWidth,window.innerHeight);
 };

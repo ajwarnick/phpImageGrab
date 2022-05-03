@@ -9,34 +9,34 @@
 			"https://rss.nytimes.com/services/xml/rss/nyt/Arts.xml"
 		];
 
-		$content = file_get_contents($feeds[rand(0, 3)]);
+		// $r = rand(0, count($feeds));
+		// $content = file_get_contents($feeds[$r]);
 		
 		// // Instantiate XML element
-		$xml = new SimpleXMLElement($content); 
-		$num = count($xml->channel->item);
-		$link = $xml->channel->item[rand(0, $num)]->link;
-		$html = file_get_contents($link);
+		// $xml = new SimpleXMLElement($content); 
+		// $num = count($xml->channel->item);
+		// $link = $xml->channel->item[rand(0, $num)]->link;
+		// $html = file_get_contents($link);
 
-		$doc = new DOMDocument();
-		@$doc->loadHTML($html);
+		// $doc = new DOMDocument();
+		// @$doc->loadHTML($html);
 		
-		$tags = $doc->getElementsByTagName('img');
+		// $tags = $doc->getElementsByTagName('img');
 		
-		foreach ($tags as $tag) {
-				echo $tag->getAttribute('src');
-				echo '<br/>';
-		}
-
+		// foreach ($tags as $tag) {
+		// 		echo "<!-- ".$tag->getAttribute('src')." -->";
+		// }
 
 		// A few settings
-		// $image = 'landscape.jpg';
+		$image = 'landscape.jpg';
+		// $image = 'portraitNew.jpeg';
 		// $image = 'https://static01.nyt.com/images/2022/03/30/business/00amazonlabor1/00amazonlabor1-threeByTwoMediumAt2X.jpg?format=pjpg&quality=75&auto=webp&disable=upscale';
 		
 		// Read image path, convert to base64 encoding
-		// $imageData = base64_encode(file_get_contents($image));
+		$imageData = base64_encode(file_get_contents($image));
 
 		// Format the image SRC:  data:{mime};base64,{data};
-		// $src = 'data: '.mime_content_type($image).';base64,'.$imageData;
+		$src = 'data: '.mime_content_type($image).';base64,'.$imageData;
 		// $src = 'data: image/*;base64,'.$imageData;
 
 		
@@ -61,7 +61,7 @@
 		<script language="javascript" type="text/javascript" src="sketch.js"></script>  
 		-->
 
-		<!-- <style> body {padding: 0; margin: 0; overflow: hidden;} img{max-width:100%;} </style> -->
+		<style> body {background-color:black;padding: 0; margin: 0; overflow: hidden;} img{max-width:100%;} </style>
 	</head>
 	<body>
 		<?php
@@ -70,9 +70,10 @@
 		?>
 
 
-		<!-- <div>
+		<div>
 			<?php echo '<img id="image" style="display:none;" src="', $src, '">'; ?>
-		</div> -->
-		
+		</div>
+		<script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
+		<script src="sketch.js"></script>
 	</body>
 </html>
