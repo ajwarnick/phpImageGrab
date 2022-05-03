@@ -3,32 +3,36 @@
 	<head>
 		<?php
 
-		$feeds = [
-			"https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
-			"https://rss.nytimes.com/services/xml/rss/nyt/US.xml",
-			"https://rss.nytimes.com/services/xml/rss/nyt/Arts.xml"
-		];
+		// $feeds = [
+		// 	"https://rss.nytimes.com/services/xml/rss/nyt/World.xml",
+		// 	"https://rss.nytimes.com/services/xml/rss/nyt/US.xml",
+		// 	"https://rss.nytimes.com/services/xml/rss/nyt/Arts.xml"
+		// ];
 
 		// $r = rand(0, count($feeds));
-		// $content = file_get_contents($feeds[$r]);
-		
-		// // Instantiate XML element
-		// $xml = new SimpleXMLElement($content); 
-		// $num = count($xml->channel->item);
-		// $link = $xml->channel->item[rand(0, $num)]->link;
-		// $html = file_get_contents($link);
+		// $content = file_get_contents($feeds[0]);
 
-		// $doc = new DOMDocument();
-		// @$doc->loadHTML($html);
+		$content = file_get_contents("https://rss.nytimes.com/services/xml/rss/nyt/World.xml");
 		
-		// $tags = $doc->getElementsByTagName('img');
+		// Instantiate XML element
+		$xml = new SimpleXMLElement($content); 
+		$num = count($xml->channel->item) - 1;
+		$link = $xml->channel->item[rand(0, $num)]->link;
+		$html = file_get_contents($link);
+
+		$doc = new DOMDocument();
+		@$doc->loadHTML($html);
 		
-		// foreach ($tags as $tag) {
-		// 		echo "<!-- ".$tag->getAttribute('src')." -->";
-		// }
+		$tags = $doc->getElementsByTagName('img');
+		
+		do {
+			$t = rand(0, count($tags)-1);
+			$image = $tags[$t]->getAttribute('src');
+			list($width, $height) = getimagesize($image);
+		} while ($width < 599);
 
 		// A few settings
-		$image = 'landscape.jpg';
+		// $image = 'landscape.jpg';
 		// $image = 'portraitNew.jpeg';
 		// $image = 'https://static01.nyt.com/images/2022/03/30/business/00amazonlabor1/00amazonlabor1-threeByTwoMediumAt2X.jpg?format=pjpg&quality=75&auto=webp&disable=upscale';
 		
@@ -36,10 +40,8 @@
 		$imageData = base64_encode(file_get_contents($image));
 
 		// Format the image SRC:  data:{mime};base64,{data};
-		$src = 'data: '.mime_content_type($image).';base64,'.$imageData;
-		// $src = 'data: image/*;base64,'.$imageData;
-
-		
+		// $src = 'data: '.mime_content_type($image).';base64,'.$imageData;
+		$src = 'data: image/*;base64,'.$imageData;
 		?>
 		
 		<title>"Newscape", 2022 - Anthony Warnick</title>
@@ -51,25 +53,9 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge"> 
-
-		<!-- 
-		<script language="javascript" type="text/javascript" src="libraries/p5.min.js"></script>
-		<script language="javascript" type="text/javascript" src="libraries/p5.dom.js"></script>
-		<script language="javascript" type="text/javascript" src="libraries/quicksettings.js"></script>
-		<script language="javascript" type="text/javascript" src="libraries/p5.gui.js"></script>
-		<script language="javascript" type="text/javascript" src="libraries/p5.sound.js"></script>
-		<script language="javascript" type="text/javascript" src="sketch.js"></script>  
-		-->
-
 		<style> body {background-color:black;padding: 0; margin: 0; overflow: hidden;} img{max-width:100%;} </style>
 	</head>
 	<body>
-		<?php
-			
-			
-		?>
-
-
 		<div>
 			<?php echo '<img id="image" style="display:none;" src="', $src, '">'; ?>
 		</div>
