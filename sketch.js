@@ -12,7 +12,11 @@ function setup() {
     createCanvas(window.innerWidth, window.innerHeight);
     let nytImage = document.getElementById("image");
     img = loadImage(nytImage.src);
-   
+    console.log( img.width );
+    if( img.width === 0 ){
+      window.location.reload();
+    }
+    
     // getArticleList()
 }
 
